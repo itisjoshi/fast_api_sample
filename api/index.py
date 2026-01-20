@@ -1,20 +1,11 @@
 from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 import json
 import numpy as np
 from pathlib import Path
 
 app = FastAPI()
 
-# Enable CORS for POST from any origin
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["POST"],
-    allow_headers=["*"],
-)
-
-# Load telemetry data at startup
 DATA_PATH = Path(__file__).parent.parent / "q-vercel-latency.json"
 
 with open(DATA_PATH, "r") as f:
@@ -34,6 +25,8 @@ def cors_headers():
 async def preflight_handler(path: str):
     return JSONResponse(content={}, headers=cors_headers())
 
+
+# ---------- MAIN ENDPOINT ----------
 @app.post("/")
 async def metrics(request: Request):
     body = await request.json()
@@ -41,7 +34,11 @@ async def metrics(request: Request):
     threshold = body.get("threshold_ms")
 
     if not regions or threshold is None:
-        return {"error": "regions and threshold_ms are required"}
+        return JSONResponse(
+            content={"error": "regions and threshold_ms are required"},
+            headers=cors_headers(),
+            status_code=400,
+        )
 
     results = []
 
@@ -74,4 +71,4 @@ async def metrics(request: Request):
             "breaches": breaches
         })
 
-    return {"metrics": results}
+    return JSONResponse(content={"metrics": results}, headers=cors_headers())
