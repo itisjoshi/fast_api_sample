@@ -16,10 +16,11 @@ with open(DATA_PATH, "r") as f:
 def cors_headers():
     return {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
         "Access-Control-Allow-Headers": "*",
-    }
-
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Expose-Headers": "Access-Control-Allow-Origin",
+}
 
 @app.options("/{path:path}")
 async def preflight_handler(path: str):
