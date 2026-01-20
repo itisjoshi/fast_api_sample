@@ -15,7 +15,7 @@ app.add_middleware(
 )
 
 # Load telemetry data at startup
-DATA_PATH = Path(__file__).parent.parent / "telemetry.json"
+DATA_PATH = Path(__file__).parent.parent / "q-vercel-latency.json"
 
 with open(DATA_PATH, "r") as f:
     TELEMETRY = json.load(f)
