@@ -20,6 +20,20 @@ DATA_PATH = Path(__file__).parent.parent / "q-vercel-latency.json"
 with open(DATA_PATH, "r") as f:
     TELEMETRY = json.load(f)
 
+
+# ---------- CORS HEADERS ----------
+def cors_headers():
+    return {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "*",
+    }
+
+
+@app.options("/{path:path}")
+async def preflight_handler(path: str):
+    return JSONResponse(content={}, headers=cors_headers())
+
 @app.post("/")
 async def metrics(request: Request):
     body = await request.json()
