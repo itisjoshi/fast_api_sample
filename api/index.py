@@ -72,4 +72,4 @@ async def metrics(request: Request):
             "breaches": breaches
         })
 
-    return JSONResponse(content={"metrics": results}, headers=cors_headers())
+    return JSONResponse(content={"regions": results}, headers=cors_headers())
